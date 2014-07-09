@@ -1562,7 +1562,7 @@ YY_ACTION(void) yy_1_ReferenceLinkSingle(char *yytext, int yyleng)
 {
 #define a yyval[-1]
   yyprintf((stderr, "do yy_1_ReferenceLinkSingle\n"));
-     link match;
+     hyperlink match;
                            if (find_reference(&match, a->children)) {
                                yy = mk_link(a->children, match.url, match.title, match.attr, match.identifier);
                                free(a);
@@ -1592,7 +1592,7 @@ YY_ACTION(void) yy_1_ReferenceLinkDouble(char *yytext, int yyleng)
 #define b yyval[-1]
 #define a yyval[-2]
   yyprintf((stderr, "do yy_1_ReferenceLinkDouble\n"));
-     link match;
+     hyperlink match;
                            if (find_reference(&match, b->children)) {
                                yy = mk_link(a->children, match.url, match.title, match.attr, match.identifier);
                                free(a);

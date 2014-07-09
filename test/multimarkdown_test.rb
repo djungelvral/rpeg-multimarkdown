@@ -1,11 +1,11 @@
 $: << File.join(File.dirname(__FILE__), "../lib")
 
-require 'test/unit'
+require 'minitest'
 require 'multimarkdown'
 
 MARKDOWN_TEST_DIR = "#{File.dirname(__FILE__)}/MultiMarkdownTest"
 
-class MultiMarkdownTest < Test::Unit::TestCase
+class MultiMarkdownTest < MiniTest::Unit::TestCase
 
   def test_that_extension_methods_are_present_on_multimarkdown_class
     assert MultiMarkdown.instance_methods.include?('to_html'),
@@ -59,11 +59,11 @@ class MultiMarkdownTest < Test::Unit::TestCase
     assert_nothing_raised(ArgumentError) { multimarkdown.to_html(true) }
   end
 
-  
+
 
   # Build tests for each file in the MarkdownTest test suite
   ["Tests","MultiMarkdownTests","BeamerTests","MemoirTests"].each do |subdir|
-    
+
     Dir["#{MARKDOWN_TEST_DIR}/#{subdir}/*.text"].each do |text_file|
 
       basename = File.basename(text_file).sub(/\.text$/, '')
