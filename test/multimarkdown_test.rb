@@ -8,7 +8,7 @@ MARKDOWN_TEST_DIR = "#{File.dirname(__FILE__)}/MultiMarkdownTest"
 class MultiMarkdownTest < MiniTest::Unit::TestCase
 
   def test_that_extension_methods_are_present_on_multimarkdown_class
-    assert MultiMarkdown.instance_methods.include?('to_html'),
+    assert MultiMarkdown.instance_methods.include?(:to_html),
       "MultiMarkdown class should respond to #to_html"
   end
 
