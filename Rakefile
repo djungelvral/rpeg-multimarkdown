@@ -7,7 +7,7 @@ require 'rubygems/package_task'
 
 task :default => :test
 
-DLEXT = Config::CONFIG['DLEXT']
+DLEXT = RbConfig::CONFIG['DLEXT']
 VERS = '0.1.1'
 
 spec = Gem::Specification.new do |s|
