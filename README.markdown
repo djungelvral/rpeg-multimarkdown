@@ -50,6 +50,7 @@ Hacking:
 Changes
 -------
 
+  * [Version 0.2](http://github.com/djungelvral/rpeg-multimarkdown/tree/v0.2)
   * [Version 0.1.1](http://github.com/djungelvral/rpeg-multimarkdown/tree/v0.1.1)
 
 COPYING
