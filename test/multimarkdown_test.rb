@@ -1,11 +1,12 @@
 $: << File.join(File.dirname(__FILE__), "../lib")
 
 require 'minitest'
+require 'minitest/autorun'
 require 'multimarkdown'
 
 MARKDOWN_TEST_DIR = "#{File.dirname(__FILE__)}/MultiMarkdownTest"
 
-class MultiMarkdownTest < MiniTest::Unit::TestCase
+class MultiMarkdownTest < MiniTest::Test
 
   def test_that_extension_methods_are_present_on_multimarkdown_class
     assert MultiMarkdown.instance_methods.include?(:to_html),
@@ -36,8 +37,8 @@ class MultiMarkdownTest < MiniTest::Unit::TestCase
       assert_respond_to multimarkdown, restriction
       assert_respond_to multimarkdown, "#{restriction}="
     end
-    assert_not_equal true, multimarkdown.filter_html
-    assert_not_equal true, multimarkdown.filter_styles
+    refute_equal true, multimarkdown.filter_html
+    refute_equal true, multimarkdown.filter_styles
 
     multimarkdown = MultiMarkdown.new('Hello World.', :filter_html, :filter_styles)
     assert_equal true, multimarkdown.filter_html
@@ -48,7 +49,7 @@ class MultiMarkdownTest < MiniTest::Unit::TestCase
     multimarkdown = MultiMarkdown.new('Hello World.')
     assert_respond_to multimarkdown, :fold_lines
     assert_respond_to multimarkdown, :fold_lines=
-    assert_not_equal true, multimarkdown.fold_lines
+    refute_equal true, multimarkdown.fold_lines
 
     multimarkdown = MultiMarkdown.new('Hello World.', :fold_lines)
     assert_equal true, multimarkdown.fold_lines
@@ -56,7 +57,7 @@ class MultiMarkdownTest < MiniTest::Unit::TestCase
 
   def test_that_redcloth_to_html_with_single_arg_is_supported
     multimarkdown = MultiMarkdown.new('Hello World.')
-    assert_nothing_raised(ArgumentError) { multimarkdown.to_html(true) }
+    multimarkdown.to_html(true)
   end
 
 
@@ -73,13 +74,13 @@ class MultiMarkdownTest < MiniTest::Unit::TestCase
       define_method "test_#{method_name}" do
         multimarkdown = MultiMarkdown.new(File.read(text_file),:compatibility)
         actual_html = multimarkdown.to_html
-        assert_not_nil actual_html
+        refute_nil actual_html
       end
 
       define_method "test_#{method_name}_with_smarty_enabled" do
         multimarkdown = MultiMarkdown.new(File.read(text_file), :smart)
         actual_html = multimarkdown.to_html
-        assert_not_nil actual_html
+        refute_nil actual_html
       end
 
     end
