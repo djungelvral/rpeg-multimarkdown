@@ -35,7 +35,10 @@ rb_multimarkdown_to_html(int argc, VALUE *argv, VALUE self)
     char *html = markdown_to_string(ptext, extensions, HTML_FORMAT);
     VALUE result = rb_str_new2(html);
     free(html);
-
+    
+    /* Take the encoding from the input, and apply to output */
+    rb_enc_copy(result, text);
+        
     return result;
 }
 
@@ -53,6 +56,9 @@ rb_multimarkdown_to_latex(int argc, VALUE *argv, VALUE self)
     VALUE result = rb_str_new2(latex);
     free(latex);
 
+    /* Take the encoding from the input, and apply to output */
+    rb_enc_copy(result, text);
+        
     return result;
 }
 
@@ -71,9 +77,18 @@ rb_multimarkdown_extract_metadata(VALUE self, VALUE key)
 
     /* Display metadata on request */
     char *metadata = extract_metadata_value(ptext, extensions, pkey);
-    VALUE result = rb_str_new2(metadata);
+    int exists = metadata != NULL;
+    /* metadata might be null, if not present */
+    /* rb_str_new2 == rb_str_new_cstr */
+    VALUE result = exists ? rb_str_new2(metadata) : Qnil;
     free(metadata);
 
+    /* Take the encoding from the input, and apply to output */
+    if(exists)
+    {
+        rb_enc_copy(result, text);
+    }
+    
     return result;
 }
 

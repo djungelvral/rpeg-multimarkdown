@@ -7,7 +7,7 @@ require 'multimarkdown'
 MARKDOWN_TEST_DIR = "#{File.dirname(__FILE__)}/MultiMarkdownTest"
 
 class MultiMarkdownTest < MiniTest::Test
-
+  
   def test_that_extension_methods_are_present_on_multimarkdown_class
     assert MultiMarkdown.instance_methods.include?(:to_html),
       "MultiMarkdown class should respond to #to_html"
@@ -60,6 +60,33 @@ class MultiMarkdownTest < MiniTest::Test
     multimarkdown.to_html(true)
   end
 
+  def test_that_encoding_is_preserved_for_html
+    test = "Écouté bien!"
+    html = MultiMarkdown.new(test, :smart).to_html
+    assert_equal html.encoding, test.encoding
+    assert_equal "<p>Écouté bien!</p>", html.strip
+  end
+
+  def test_that_encoding_is_preserved_for_latex
+    test = "Écouté bien!"
+    latex = MultiMarkdown.new(test, :smart).to_latex
+    assert_equal latex.encoding, test.encoding
+    assert_equal "Écouté bien!", latex.strip
+  end
+
+  def test_that_encoding_is_preserved_for_metadata
+    test = "Title: Some åccentéd document\n\nÉcouté bien!"
+    title = MultiMarkdown.new(test, :smart).extract_metadata("title")
+    refute_nil title
+    assert_equal title.encoding, test.encoding
+    assert_equal "Some åccentéd document", title.strip
+  end
+
+  def test_that_missing_metadata_returns_nil
+    test = "Title: Some document\n\nHere's some text"
+    author = MultiMarkdown.new(test, :smart).extract_metadata("author")
+    assert_nil author
+  end
 
 
   # Build tests for each file in the MarkdownTest test suite
