@@ -13,7 +13,7 @@ struct Link {
     char            *identifier;
 };
 
-typedef struct Link link;
+typedef struct Link hyperlink;
 
 /* Union for contents of an Element (string, list, or link). */
 union Contents {

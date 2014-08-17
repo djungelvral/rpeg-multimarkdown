@@ -43,6 +43,8 @@ Hacking:
 
     $ git clone git://github.com/djungelvral/rpeg-multimarkdown.git
     $ cd rpeg-multimarkdown
+    $ git submodule init
+    $ git submodule update
     $ rake test
 
 Changes
