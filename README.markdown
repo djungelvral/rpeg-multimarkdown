@@ -50,10 +50,10 @@ Hacking:
 Changes
 -------
 
-  * [Version 0.2.1](http://github.com/djungelvral/rpeg-multimarkdown/tree/v0.2.1)
-	  * Fixed ruby module tests, which weren't actually running
-  * [Version 0.2](http://github.com/djungelvral/rpeg-multimarkdown/tree/v0.2)
+  * [Version 0.2.2](http://github.com/djungelvral/rpeg-multimarkdown/tree/v0.2.2)
 	  * Bringing everything up to date with the last version of peg-multimarkdown
+	  * Fixed ruby module tests, which weren't actually running
+	  * Preserve encoding, e.g. for UTF-8
   * [Version 0.1.1](http://github.com/djungelvral/rpeg-multimarkdown/tree/v0.1.1)
 
 COPYING
