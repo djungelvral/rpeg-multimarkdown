@@ -14,6 +14,8 @@
 
  ***********************************************************************/
 
+#include "odf.h"
+
 
 void print_odf_header(GString *out){
     
@@ -99,7 +101,7 @@ void print_odf_header(GString *out){
     "             style:class=\"html\">\n" \
     "   <style:paragraph-properties fo:margin-left=\"0.3937in\" fo:margin-right=\"0.3937in\" fo:margin-top=\"0in\"\n" \
     "                               fo:margin-bottom=\"0.1965in\"\n" \
-    "                               fo:text-align=\"justify\"" \ 
+    "                               fo:text-align=\"justify\"" \
     "                               style:justify-single-word=\"false\"" \
     "                               fo:text-indent=\"0in\"\n" \
     "                               style:auto-text-indent=\"false\"/>\n" \
@@ -130,6 +132,10 @@ void print_odf_header(GString *out){
     "                               style:join-border=\"false\"/>\n" \
     "   <style:text-properties fo:font-size=\"6pt\" style:font-size-asian=\"6pt\" style:font-size-complex=\"6pt\"/>\n" \
     "</style:style>\n" \
+	"<style:style style:name=\"Footnote_20_anchor\" style:display-name=\"Footnote anchor\"" \
+	"              style:family=\"text\">" \
+	"    <style:text-properties style:text-position=\"super 58%\"/>" \
+	" </style:style>" \
     "</office:styles>\n");
 
     /* Automatic style information */

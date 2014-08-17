@@ -1,9 +1,10 @@
+
 /**********************************************************************
 
   markdown_lib.c - markdown in C using a PEG grammar.
   (c) 2008 John MacFarlane (jgm at berkeley dot edu).
 
-  portions Copyright (c) 2010-2011 Fletcher T. Penney
+  portions Copyright (c) 2010-2013 Fletcher T. Penney
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License or the MIT
@@ -22,6 +23,7 @@
 #include "markdown_peg.h"
 
 #define TABSTOP 4
+#define VERSION "3.7"
 
 /* preformat_text - allocate and copy text buffer while
  * performing tab expansion. */
@@ -99,9 +101,9 @@ static void print_tree(element * elt, int indent) {
             default:                 key = "?";
         }
         if ( elt->key == STR ) {
-            fprintf(stderr, "0x%x: %s   '%s'\n", (int)elt, key, elt->contents.str);
+            fprintf(stderr, "0x%p: %s   '%s'\n", (void *)elt, key, elt->contents.str);
         } else {
-            fprintf(stderr, "0x%x: %s\n", (int)elt, key);
+            fprintf(stderr, "0x%p: %s\n", (void *)elt, key);
         }
         if (elt->children)
             print_tree(elt->children, indent + 4);
@@ -155,27 +157,30 @@ GString * markdown_to_g_string(char *text, int extensions, int output_format) {
 
     formatted_text = preformat_text(text);
 
+    references = parse_references(formatted_text->str, extensions);
+    notes = parse_notes(formatted_text->str, extensions, references);
+    labels = parse_labels(formatted_text->str, extensions, references, notes);
+
     if (output_format == OPML_FORMAT) {
         result = parse_markdown_for_opml(formatted_text->str, extensions);
     } else {
-        references = parse_references(formatted_text->str, extensions);
-        notes = parse_notes(formatted_text->str, extensions, references);
-        labels = parse_labels(formatted_text->str, extensions, references, notes);
         result = parse_markdown_with_metadata(formatted_text->str, extensions, references, notes, labels);
-
         result = process_raw_blocks(result, extensions, references, notes, labels);
     }
 
     g_string_free(formatted_text, TRUE);
 
-    print_element_list(out, result, output_format, extensions);
-
+    if (result == NULL) {
+        /* The parsing was aborted */
+        g_string_append(out,"MultiMarkdown was unable to parse this file.");
+    } else {
+        print_element_list(out, result, output_format, extensions);
+    }
     free_element_list(result);
 
-    if (output_format != OPML_FORMAT) {
-        free_element_list(references);
-        free_element_list(labels);
-    }
+    free_element_list(references);
+    free_element_list(labels);
+
     return out;
 }
 
@@ -198,14 +203,63 @@ char * markdown_to_string(char *text, int extensions, int output_format) {
 char * extract_metadata_value(char *text, int extensions, char *key) {
     char *value;
     element *result;
-    char *meta;
+    element *references;
+    element *notes;
+    element *labels;
     GString *formatted_text;
 
     formatted_text = preformat_text(text);
+
+    references = parse_references(formatted_text->str, extensions);
+    notes = parse_notes(formatted_text->str, extensions, references);
+    labels = parse_labels(formatted_text->str, extensions, references, notes);
+
+    result = parse_metadata_only(formatted_text->str, extensions);
+
+    value = metavalue_for_key(key, result);
+    free_element_list(result);
+    free_element_list(references);
+    free_element_list(labels);
+
+    return value;
+}
+
+/* has_metadata - parse document and report whether metadata is present */
+gboolean has_metadata(char *text, int extensions) {
+    gboolean hasMeta;
+    element *result;
+    element *references;
+    element *notes;
+    element *labels;
+    GString *formatted_text;
+    
+    formatted_text = preformat_text(text);
+
+    references = parse_references(formatted_text->str, extensions);
+    notes = parse_notes(formatted_text->str, extensions, references);
+    labels = parse_labels(formatted_text->str, extensions, references, notes);
     
     result = parse_metadata_only(formatted_text->str, extensions);
+
+    hasMeta = FALSE;
     
-    value = metavalue_for_key(key, result->children);
-    free_element_list(result);
-    return value;
+    if (result != NULL) {
+        if (result->children != NULL) {
+            hasMeta = TRUE;
+            free_element_list(result);
+        } else {
+            free_element(result);
+        }
+    }
+
+    free_element_list(references);
+    free_element_list(labels);
+    return hasMeta;
+}
+
+/* version - return the MultiMarkdown library version */
+char * mmd_version() {
+    char* result = (char*)malloc(8);
+    sprintf(result, "%s",VERSION);
+    return result;
 }

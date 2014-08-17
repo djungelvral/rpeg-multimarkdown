@@ -2,7 +2,7 @@ require 'mkmf'
 
 dir_config('peg_multimarkdown')
 
-$objs = %w[markdown.o markdown_lib.o markdown_output.o markdown_parser.o]
+$objs = %w[markdown.o markdown_lib.o markdown_output.o markdown_parser.o parsing_functions.o utility_functions.o]
 
 if pkg_config = find_executable('pkg-config')
   $CFLAGS = "-fcommon -std=gnu89 "+`#{pkg_config} --cflags glib-2.0`
